@@ -106,7 +106,8 @@ module room (
   input  wire v,
   output wire sw,
   output reg  s0, s1, s2, s3, s4, s5, s6,
-  output reg  win, d
+  output reg  win, d,
+  output reg [0:6] seven_seg 
   
 );
 
@@ -255,27 +256,37 @@ always@(posedge clk) begin
 				
 			end
 		endcase
+		case ({t_s0,t_s1,t_s2,t_s3,t_s4,t_s5,t_s6})
+			7'b1000000: seven_seg = 7'b0000001; // s0
+			7'b0100000: seven_seg = 7'b1001111; // s1
+			7'b0010000: seven_seg = 7'b0010010; // s2
+			7'b0001000: seven_seg = 7'b0000110; // s3
+			7'b0000100: seven_seg = 7'b1001100; // s4
+			7'b0000010: seven_seg = 7'b0100100; // s5
+			7'b0000001: seven_seg = 7'b0100000; // s6
+		endcase
+
 		
 	end
 	
 end
-
 endmodule
 
 module Lab4 (
   input  wire clk, rst,
   input  wire n, s, e, w,
-  output reg  s0, s1, s2, s3, s4, s5, s6,
+  output reg s0, s1, s2, s3, s4, s5, s6,
   output sw, v,
-  output reg  win, d 
-);
+  output reg  win, d,
+  output wire [0:6] seven_seg
+);  
 
 wire t_sw, t_v;
 
 assign sw = t_sw;
 assign v  = t_v;
 
-room room_t(clk, rst, n, s, e, w, t_v, t_sw, s0, s1, s2, s3, s4, s5, s6, win, d );
+room room_t(clk, rst, n, s, e, w, t_v, t_sw, s0, s1, s2, s3, s4, s5, s6, win, d, seven_seg);
 sword sword_t(clk, rst, t_sw, t_v);
 
 endmodule
